@@ -14,20 +14,8 @@ def leer_laberinto(ruta_archivo):
         laberinto.append(fila)
 
     return  meta_declarada, laberinto
-def encontrar_inicio_y_meta(laberinto):
-    inicio = None
-    meta = None
 
-    for fila in range(len(laberinto)):
-        for columna in range(len(laberinto[fila])):
 
-            if laberinto[fila][columna] == 2:
-                inicio = (fila, columna)
-
-            elif laberinto[fila][columna] == 3:
-                meta = (fila, columna)
-
-    return inicio, meta
 def validar_laberinto(laberinto):
     if not laberinto:
         raise ValueError("El laberinto está vacío.")

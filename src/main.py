@@ -78,7 +78,7 @@ def probar_casos_limite(grafo):
 
 
 def main():
-    # 1. Carga y validación (Integrante 1)
+    # 1. Carga y validación
     meta_declarada, laberinto = leer_laberinto(RUTA_LABERINTO)
     filas, columnas = validar_laberinto(laberinto)
     inicio, meta = encontrar_inicio_y_meta(laberinto)
@@ -87,7 +87,7 @@ def main():
     print(f"Meta declarada en encabezado: {meta_declarada}")
     print(f"Inicio: {inicio} | Meta: {meta}")
 
-    # 2. Transformación a grafo (Integrante 1)
+    # 2. Transformación a grafo 
     lista_adyacencia = matriz_a_grafo(laberinto)
     grafo = Grafo(lista_adyacencia)
     print(f"Nodos transitables: {len(grafo.lista_adyacencia)}")
@@ -106,7 +106,7 @@ def main():
         if r["encontrado"] and r["nombre"] == "BFS":
             print(f"\nRuta completa encontrada por BFS:\n{r['camino']}")
 
-    # 7. Pruebas de casos límite (tu aporte independiente como Integrante 4)
+    # 7. Pruebas de casos límite 
     probar_casos_limite(grafo)
 
 

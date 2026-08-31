@@ -5,7 +5,7 @@ pytest tests/test_algoritmos.py -v
 import sys
 import os
 
-# Permite importar los módulos de src/ sin instalarlos como paquete
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from grafo import Grafo
@@ -19,10 +19,6 @@ def grafo_con_ciclo():
     """
     Grafo pequeño con un ciclo, para verificar que los algoritmos
     no entren en bucle infinito:
-
-        A - B
-        |   |
-        C - D - E (meta)
     """
     lista_adyacencia = {
         "A": [("B", 1), ("C", 1)],
@@ -82,15 +78,12 @@ def test_bfs_devuelve_la_ruta_minima():
 
 def test_a_estrella_encuentra_ruta_en_grafo_con_ciclo():
     """
-    NOTA: la heurística h(n) del proyecto asume nodos tipo (fila, columna),
+    La heurística h(n) del proyecto asume nodos tipo (fila, columna),
     ya que se diseñó específicamente para el laberinto (usa n[0], n[1]).
     Por eso esta prueba usa un grafo con nodos-coordenada, no letras,
     a diferencia de las pruebas de DFS/BFS que sí funcionan con cualquier
     tipo de nodo hashable.
 
-        (0,0) - (0,1)
-          |        |
-        (1,0) - (1,1) - (1,2) [meta]
     """
     lista_adyacencia = {
         (0, 0): [((0, 1), 1), ((1, 0), 1)],

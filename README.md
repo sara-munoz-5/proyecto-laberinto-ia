@@ -152,9 +152,12 @@ Si tienes problemas con la ruta, usa comillas alrededor de la ruta completa:
 cd "C:\Users\thoma\Desktop\...\proyecto-laberinto-ia"
 ```
 
-## Autor
+## Autores
 
-Universidad - Introducción a la IA (7º Semestre)
+- Thomas Arévalo Rodríguez 
+- Laura Sofía Aponte Sánchez 
+- Alexander Aponte Largacha 
+- Sara Sofia Muñoz 
 
 ## Licencia
 

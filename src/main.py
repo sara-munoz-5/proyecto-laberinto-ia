@@ -15,8 +15,15 @@ RUTA_LABERINTO = "data/laberinto.txt"
 def ejecutar_algoritmo(nombre, funcion, inicio, meta):
     """Ejecuta un algoritmo de búsqueda, mide su tiempo y reporta resultados."""
     t0 = time.perf_counter()
-    camino = funcion(inicio, meta)
+    resultado = funcion(inicio, meta)
     t1 = time.perf_counter()
+
+    # Desempacar tupla (camino, nodos_visitados)
+    if isinstance(resultado, tuple):
+        camino, nodos_visitados = resultado
+    else:
+        camino = resultado
+        nodos_visitados = 0
 
     tiempo_ms = (t1 - t0) * 1000
     longitud = len(camino) if camino else 0
@@ -27,27 +34,29 @@ def ejecutar_algoritmo(nombre, funcion, inicio, meta):
         print(f"Longitud del camino: {longitud} nodos")
     else:
         print("Camino encontrado: NO (o algoritmo aún no implementado)")
+    print(f"Nodos visitados: {nodos_visitados}")
     print(f"Tiempo de ejecución: {tiempo_ms:.3f} ms")
 
     return {
         "nombre": nombre,
         "encontrado": camino is not None,
         "longitud": longitud,
+        "nodos_visitados": nodos_visitados,
         "tiempo_ms": tiempo_ms,
         "camino": camino,
     }
 
 
 def imprimir_tabla_comparativa(resultados):
-    print("\n" + "=" * 55)
+    print("\n" + "=" * 70)
     print("TABLA COMPARATIVA DE ALGORITMOS")
-    print("=" * 55)
-    print(f"{'Algoritmo':<20}{'Encontró':<12}{'Longitud':<12}{'Tiempo (ms)':<12}")
-    print("-" * 55)
+    print("=" * 70)
+    print(f"{'Algoritmo':<15}{'Encontró':<10}{'Longitud':<10}{'Visitados':<12}{'Tiempo (ms)':<12}")
+    print("-" * 70)
     for r in resultados:
         encontrado = "Sí" if r["encontrado"] else "No"
-        print(f"{r['nombre']:<20}{encontrado:<12}{r['longitud']:<12}{r['tiempo_ms']:<12.3f}")
-    print("=" * 55)
+        print(f"{r['nombre']:<15}{encontrado:<10}{r['longitud']:<10}{r['nodos_visitados']:<12}{r['tiempo_ms']:<12.3f}")
+    print("=" * 70)
 
 
 def probar_casos_limite(grafo):
@@ -65,13 +74,13 @@ def probar_casos_limite(grafo):
         nodo_cualquiera = next(iter(grafo.lista_adyacencia))
 
         # Caso 1: inicio == meta
-        resultado = funcion(nodo_cualquiera, nodo_cualquiera)
+        resultado, nodos = funcion(nodo_cualquiera, nodo_cualquiera)
         ok = resultado == [nodo_cualquiera]
         print(f"[{nombre}] inicio == meta -> {'OK' if ok else 'FALLÓ'} (resultado: {resultado})")
 
         # Caso 2: meta inexistente en el grafo (nodo fuera del laberinto)
         try:
-            resultado = funcion(nodo_cualquiera, (-1, -1))
+            resultado, nodos = funcion(nodo_cualquiera, (-1, -1))
             print(f"[{nombre}] meta inexistente -> lanzó excepción esperada: NO (revisar manejo de errores)")
         except KeyError:
             print(f"[{nombre}] meta inexistente -> lanzó KeyError (revisar si se debe manejar más elegante)")

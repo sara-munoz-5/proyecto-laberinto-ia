@@ -28,14 +28,14 @@ class Grafo:
             visitados.add(nodo_actual)
 
             if nodo_actual == nodo_final:
-                return camino
+                return camino, len(visitados)
 
             vecinos = self.obtener_vecinos(nodo_actual)
             for vecino, _ in reversed(vecinos):
                 if vecino not in visitados:
                     pila.append((vecino, camino + [vecino]))
 
-        return None
+        return None, len(visitados)
 
     def primero_anchura(self, nodo_inicio, nodo_final):
         cola = deque([(nodo_inicio, [nodo_inicio])])
@@ -45,14 +45,14 @@ class Grafo:
             nodo_actual, camino = cola.popleft()
 
             if nodo_actual == nodo_final:
-                return camino
+                return camino, len(visitados)
 
             for vecino, _ in self.obtener_vecinos(nodo_actual):
                 if vecino not in visitados:
                     visitados.add(vecino)
                     cola.append((vecino, camino + [vecino]))
 
-        return None
+        return None, len(visitados)
 
     def a_estrella(self, nodo_inicio, nodo_final):
         self.meta = nodo_final
@@ -65,7 +65,7 @@ class Grafo:
             f_actual, _, nodo_actual, camino, g_actual = heapq.heappop(cola_prioridad)
 
             if nodo_actual == nodo_final:
-                return camino
+                return camino, len(visitados)
 
             if nodo_actual in visitados:
                 continue
@@ -81,4 +81,4 @@ class Grafo:
                         (f_nuevo, contador, vecino, camino + [vecino], g_nuevo)
                     )
 
-        return None
+        return None, len(visitados)

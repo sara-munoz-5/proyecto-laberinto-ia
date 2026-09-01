@@ -8,7 +8,9 @@ Este proyecto implementa herramientas para:
 - **Leer y validar laberintos** representados como matrices desde archivos de texto
 - **Identificar inicio y meta** dentro del laberinto
 - **Transformar laberintos a grafos** para análisis de rutas
-- **Aplicar algoritmos de búsqueda** para encontrar el camino más corto
+- **Comparar algoritmos de búsqueda**: DFS (Profundidad), BFS (Anchura) y A* (Heurístico)
+- **Medir y comparar rendimiento** de los diferentes algoritmos
+- **Validar casos límite** y comportamiento en escenarios especiales
 
 ### Representación del Laberinto
 - `0`: Celda transitable (camino)
@@ -39,7 +41,7 @@ proyecto-laberinto-ia/
 
 ### Descripción de los módulos
 
-- **main.py**: Punto de entrada del programa. Lee el laberinto, lo valida y lo convierte en grafo, mostrando información sobre la estructura.
+- **main.py**: Punto de entrada del programa. Carga el laberinto, lo valida, lo convierte en grafo y ejecuta tres algoritmos de búsqueda (DFS, BFS, A*), midiendo su rendimiento y mostrando una tabla comparativa.
 
 - **lector_laberinto.py**: Contiene funciones para:
   - `leer_laberinto()`: Lee el archivo del laberinto
@@ -48,7 +50,11 @@ proyecto-laberinto-ia/
 
 - **transformacion_grafo.py**: Convierte la matriz del laberinto en una estructura de grafo (diccionario de adyacencias).
 
-- **grafo.py**: Define la estructura y operaciones del grafo.
+- **grafo.py**: Define la clase `Grafo` con tres métodos de búsqueda:
+  - `primero_profundidad(inicio, meta)`: Búsqueda por profundidad (DFS)
+  - `primero_anchura(inicio, meta)`: Búsqueda por anchura (BFS)
+  - `a_estrella(inicio, meta)`: Búsqueda con heurística A*
+  - `h(nodo)`: Función heurística basada en distancia Manhattan
 
 - **test_algoritmos.py**: Suite de pruebas para validar la funcionalidad del proyecto.
 
@@ -77,20 +83,54 @@ python src/main.py
 ```
 
 El programa mostrará:
-- Cantidad de nodos transitables en el laberinto
-- Los vecinos de la posición de salida
-- La meta declarada en el archivo
-- Las dimensiones del laberinto
-- Las coordenadas de inicio y meta
+- Información del laberinto cargado (dimensiones, inicio y meta)
+- Resultados de tres algoritmos de búsqueda (DFS, BFS, A*)
+- Tiempo de ejecución de cada algoritmo en milisegundos
+- Tabla comparativa de rendimiento
+- La ruta completa encontrada por BFS
+- Pruebas de casos límite (mismo inicio y meta, meta inexistente, etc.)
 
 **Ejemplo de salida:**
 ```
-Cantidad de nodos transitables: 450
-Vecinos de la salida: [(0, 1), (1, 0)]
-Meta declarada en el archivo: (17, 17)
-Dimensiones reales: 17 x 34
-Salida: (0, 0)
-Meta: (17, 17)
+Laberinto cargado: 17x34
+Meta declarada en encabezado: (17, 17)
+Inicio: (0, 0) | Meta: (17, 17)
+Nodos transitables: 450
+
+--- DFS ---
+Camino encontrado: SI
+Longitud del camino: 67 nodos
+Tiempo de ejecución: 12.345 ms
+
+--- BFS ---
+Camino encontrado: SI
+Longitud del camino: 35 nodos
+Tiempo de ejecución: 8.567 ms
+
+--- A* ---
+Camino encontrado: SI
+Longitud del camino: 35 nodos
+Tiempo de ejecución: 5.234 ms
+
+=======================================================
+TABLA COMPARATIVA DE ALGORITMOS
+=======================================================
+Algoritmo           Encontró     Longitud     Tiempo (ms)
+-------------------------------------------------------
+DFS                 Sí           67           12.345
+BFS                 Sí           35           8.567
+A*                  Sí           35           5.234
+=======================================================
+
+Ruta completa encontrada por BFS:
+[(0, 0), (1, 0), (2, 0), (3, 1), (4, 1), ..., (17, 17)]
+
+=======================================================
+PRUEBAS DE CASOS LÍMITE
+=======================================================
+[DFS] inicio == meta -> OK (resultado: [(0, 0)])
+[BFS] inicio == meta -> OK (resultado: [(0, 0)])
+...
 ```
 
 ### 4. Ejecutar las pruebas
@@ -106,6 +146,39 @@ O sin pytest (si lo prefieres):
 ```bash
 python tests/test_algoritmos.py
 ```
+
+## Algoritmos de Búsqueda Implementados
+
+### 1. **DFS (Depth-First Search / Búsqueda por Profundidad)**
+- Explora el laberinto siguiendo un camino hasta llegar a un callejón sin salida
+- Utiliza una **pila** (stack) para almacenar nodos por explorar
+- Encuentra **una solución**, pero no garantiza que sea la más corta
+- Generalmente más rápido pero con rutas más largas
+
+### 2. **BFS (Breadth-First Search / Búsqueda por Anchura)**
+- Explora el laberinto nivel por nivel desde el inicio
+- Utiliza una **cola** (queue) para explorar nodos uniformemente
+- **Garantiza encontrar la solución más corta** (óptima)
+- Más consumidor de memoria pero con rutas óptimas
+
+### 3. **A* (A-Star Search)**
+- Combina lo mejor de DFS y BFS usando una **función heurística**
+- La heurística utilizada es la **distancia Manhattan**: `|x₁-x₂| + |y₁-y₂|`
+- **Más eficiente que BFS** mientras mantiene optimalidad (bajo ciertas condiciones)
+- Ideal para búsquedas en espacios grandes
+
+## Comparación de Algoritmos
+
+El programa ejecuta automáticamente los tres algoritmos y presenta una tabla comparativa mostrando:
+
+| Métrica | DFS | BFS | A* |
+|---------|-----|-----|-----|
+| **Optimalidad** | No garantiza ruta corta | ✅ Óptima | ✅ Óptima |
+| **Complejidad Espacio** | O(n) - mejor | O(n) | O(n) |
+| **Complejidad Tiempo** | O(n+e) | O(n+e) | O(n log n) |
+| **Uso en práctica** | Exploración general | Camino más corto | Búsqueda eficiente |
+
+La tabla comparativa al final de la ejecución te permitirá evaluar qué algoritmo es más eficiente para tu laberinto.
 
 ## Modificar el Laberinto
 

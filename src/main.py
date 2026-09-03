@@ -10,7 +10,7 @@ from grafo import Grafo
 
 
 # Define el archivo de laberinto que utilizará el programa.
-RUTA_LABERINTO = "data/laberinto_dificil.txt"
+RUTA_LABERINTO = "data/laberinto.txt"
 
 
 def ejecutar_algoritmo(nombre, funcion, inicio, meta):

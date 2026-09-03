@@ -55,7 +55,7 @@ def cargar_grafo_real():
 
 def test_dfs_encuentra_ruta_en_grafo_con_ciclo():
     g = grafo_con_ciclo()
-    camino = g.primero_profundidad("A", "E")
+    camino, _ = g.primero_profundidad("A", "E")
     assert camino is not None
     assert camino[0] == "A"
     assert camino[-1] == "E"
@@ -63,7 +63,7 @@ def test_dfs_encuentra_ruta_en_grafo_con_ciclo():
 
 def test_bfs_encuentra_ruta_en_grafo_con_ciclo():
     g = grafo_con_ciclo()
-    camino = g.primero_anchura("A", "E")
+    camino, _ = g.primero_anchura("A", "E")
     assert camino is not None
     assert camino[0] == "A"
     assert camino[-1] == "E"
@@ -72,7 +72,7 @@ def test_bfs_encuentra_ruta_en_grafo_con_ciclo():
 def test_bfs_devuelve_la_ruta_minima():
     # En este grafo, la ruta mínima de A a E es A-B-D-E o A-C-D-E (3 aristas, 4 nodos)
     g = grafo_con_ciclo()
-    camino = g.primero_anchura("A", "E")
+    camino, _ = g.primero_anchura("A", "E")
     assert len(camino) == 4
 
 
@@ -93,7 +93,7 @@ def test_a_estrella_encuentra_ruta_en_grafo_con_ciclo():
         (1, 2): [((1, 1), 1)],
     }
     g = Grafo(lista_adyacencia)
-    camino = g.a_estrella((0, 0), (1, 2))
+    camino, _ = g.a_estrella((0, 0), (1, 2))
     assert camino is not None
     assert camino[0] == (0, 0)
     assert camino[-1] == (1, 2)
@@ -103,29 +103,33 @@ def test_a_estrella_encuentra_ruta_en_grafo_con_ciclo():
 
 def test_inicio_igual_a_meta_dfs():
     g = grafo_con_ciclo()
-    assert g.primero_profundidad("A", "A") == ["A"]
+    camino, _ = g.primero_profundidad("A", "A")
+    assert camino == ["A"]
 
 
 def test_inicio_igual_a_meta_bfs():
     g = grafo_con_ciclo()
-    assert g.primero_anchura("A", "A") == ["A"]
+    camino, _ = g.primero_anchura("A", "A")
+    assert camino == ["A"]
 
 
 def test_meta_inalcanzable_dfs():
     g = grafo_desconectado()
-    assert g.primero_profundidad("A", "X") is None
+    camino, _ = g.primero_profundidad("A", "X")
+    assert camino is None
 
 
 def test_meta_inalcanzable_bfs():
     g = grafo_desconectado()
-    assert g.primero_anchura("A", "X") is None
+    camino, _ = g.primero_anchura("A", "X")
+    assert camino is None
 
 
 # ---------- Pruebas: laberinto real del proyecto ----------
 
 def test_dfs_en_laberinto_real_llega_de_salida_a_meta():
     grafo, inicio, meta = cargar_grafo_real()
-    camino = grafo.primero_profundidad(inicio, meta)
+    camino, _ = grafo.primero_profundidad(inicio, meta)
     assert camino is not None
     assert camino[0] == inicio
     assert camino[-1] == meta
@@ -133,7 +137,7 @@ def test_dfs_en_laberinto_real_llega_de_salida_a_meta():
 
 def test_bfs_en_laberinto_real_llega_de_salida_a_meta():
     grafo, inicio, meta = cargar_grafo_real()
-    camino = grafo.primero_anchura(inicio, meta)
+    camino, _ = grafo.primero_anchura(inicio, meta)
     assert camino is not None
     assert camino[0] == inicio
     assert camino[-1] == meta
@@ -141,7 +145,7 @@ def test_bfs_en_laberinto_real_llega_de_salida_a_meta():
 
 def test_a_estrella_en_laberinto_real_llega_de_salida_a_meta():
     grafo, inicio, meta = cargar_grafo_real()
-    camino = grafo.a_estrella(inicio, meta)
+    camino, _ = grafo.a_estrella(inicio, meta)
     assert camino is not None
     assert camino[0] == inicio
     assert camino[-1] == meta
@@ -153,8 +157,8 @@ def test_a_estrella_encuentra_ruta_igual_de_corta_que_bfs():
     A* debe encontrar una ruta de la misma longitud óptima que BFS.
     """
     grafo, inicio, meta = cargar_grafo_real()
-    camino_bfs = grafo.primero_anchura(inicio, meta)
-    camino_a_estrella = grafo.a_estrella(inicio, meta)
+    camino_bfs, _ = grafo.primero_anchura(inicio, meta)
+    camino_a_estrella, _ = grafo.a_estrella(inicio, meta)
     assert len(camino_bfs) == len(camino_a_estrella)
 
 
@@ -164,6 +168,6 @@ def test_dfs_no_garantiza_ruta_minima_en_laberinto_real():
     de hecho lo hace) encontrar una ruta más larga que la óptima.
     """
     grafo, inicio, meta = cargar_grafo_real()
-    camino_dfs = grafo.primero_profundidad(inicio, meta)
-    camino_bfs = grafo.primero_anchura(inicio, meta)
+    camino_dfs, _ = grafo.primero_profundidad(inicio, meta)
+    camino_bfs, _ = grafo.primero_anchura(inicio, meta)
     assert len(camino_dfs) >= len(camino_bfs)

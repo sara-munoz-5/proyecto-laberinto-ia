@@ -4,7 +4,11 @@ import time
 # Importa las funciones que leen, validan y localizan los puntos del laberinto.
 from lector_laberinto import leer_laberinto, encontrar_inicio_y_meta, validar_laberinto
 # Importa la función que convierte la matriz en una lista de adyacencia.
-from transformacion_grafo import matriz_a_grafo
+from transformacion_grafo import (
+    matriz_a_grafo,
+    construir_macro_grafo,
+    expandir_ruta_macro,
+)
 # Importa la clase que implementa los algoritmos DFS, BFS y A*.
 from grafo import Grafo
 
@@ -72,6 +76,12 @@ def imprimir_tabla_comparativa(resultados):
     print("=" * 73)
 
 
+def resolver_astar_macro(grafo, macro_grafo, inicio, meta):
+    """Ejecuta A* macro y devuelve la ruta completa para mostrarla."""
+    ruta_macro, nodos_visitados = grafo.astar_macro(inicio, meta, macro_grafo)
+    return expandir_ruta_macro(ruta_macro, macro_grafo), nodos_visitados
+
+
 def probar_casos_limite(grafo):
     """Comprueba cómo responden DFS y BFS ante situaciones especiales."""
     # Imprime el encabezado de las pruebas manuales.
@@ -127,14 +137,24 @@ def main():
     lista_adyacencia = matriz_a_grafo(laberinto)
     # 5. Crea el objeto que permite ejecutar los algoritmos de búsqueda.
     grafo = Grafo(lista_adyacencia)
+    macro_grafo = construir_macro_grafo(lista_adyacencia, inicio, meta)
     # Informa cuántas celdas pueden ser recorridas.
     print(f"Nodos transitables: {len(lista_adyacencia)}")
+    print(f"Nodos de decisión: {len(macro_grafo)}")
 
     # 6. Ejecuta los tres algoritmos con el mismo inicio y la misma meta.
     resultados = [
         ejecutar_algoritmo("DFS", grafo.primero_profundidad, inicio, meta),
         ejecutar_algoritmo("BFS", grafo.primero_anchura, inicio, meta),
         ejecutar_algoritmo("A*", grafo.a_estrella, inicio, meta),
+        ejecutar_algoritmo(
+            "A* macro",
+            lambda origen, destino: resolver_astar_macro(
+                grafo, macro_grafo, origen, destino
+            ),
+            inicio,
+            meta,
+        ),
     ]
 
     # 7. Presenta en una sola tabla los resultados obtenidos.

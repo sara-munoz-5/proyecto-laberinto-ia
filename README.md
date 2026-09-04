@@ -180,6 +180,51 @@ El programa ejecuta automáticamente los tres algoritmos y presenta una tabla co
 
 La tabla comparativa al final de la ejecución te permitirá evaluar qué algoritmo es más eficiente para tu laberinto.
 
+## Modificación: A* sobre un Macro-Grafo
+
+La modificación implementa una versión optimizada de A* para que el algoritmo no
+explore cada celda del corredor como si fuera una decisión independiente. Se
+mantiene el A* original para comparar ambos comportamientos.
+
+### Cómo funciona
+
+1. `identificar_nodos_decision()` considera nodos de decisión las celdas cuyo
+  grado es diferente de 2. Por esto incluye bifurcaciones, callejones sin salida
+  y, explícitamente, el inicio y la meta.
+2. `construir_macro_grafo()` recorre cada corredor desde un nodo de decisión
+  hasta el siguiente. Cada macro-arista guarda el nodo destino, el costo del
+  corredor en pasos y la secuencia completa de celdas que lo forman.
+3. `Grafo.astar_macro()` ejecuta A* sobre esos macro-vecinos. El costo acumulado
+  `g(n)` suma la longitud de cada corredor recorrido, por lo que conserva los
+  costos reales del laberinto.
+4. `expandir_ruta_macro()` convierte la secuencia compacta de nodos de decisión
+  en la ruta celda por celda. Así se puede visualizar el camino completo sin
+  perder los pasos intermedios.
+
+### Ejecución y comparación
+
+Desde la carpeta raíz del proyecto, ejecuta:
+
+```bash
+python src/main.py
+```
+
+La salida incluye `A*`, que trabaja celda por celda, y `A* macro`, que trabaja
+con corredores. Para cada algoritmo se muestran la longitud de la ruta, los
+nodos visitados y el tiempo de ejecución. En el caso de `A* macro`, la longitud
+corresponde a la ruta expandida, mientras que los nodos visitados corresponden
+únicamente a nodos de decisión. Una reducción en esta última métrica evidencia
+la optimización en laberintos con corredores largos.
+
+Las pruebas específicas de la modificación se ejecutan junto con la suite:
+
+```bash
+python -m pytest tests/
+```
+
+Estas pruebas verifican que la ruta macro se expande desde el inicio hasta la
+meta y que conserva la longitud óptima encontrada por BFS.
+
 ## Modificar el Laberinto
 
 El archivo `data/laberinto.txt` contiene el laberinto a resolver. Para modificarlo:

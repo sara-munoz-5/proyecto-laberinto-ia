@@ -10,7 +10,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from grafo import Grafo
 from lector_laberinto import leer_laberinto, encontrar_inicio_y_meta, validar_laberinto
-from transformacion_grafo import matriz_a_grafo
+from transformacion_grafo import (
+    matriz_a_grafo,
+    construir_macro_grafo,
+    expandir_ruta_macro,
+)
 
 
 # ---------- Fixtures / datos de prueba ----------
@@ -171,3 +175,27 @@ def test_dfs_no_garantiza_ruta_minima_en_laberinto_real():
     camino_dfs, _ = grafo.primero_profundidad(inicio, meta)
     camino_bfs, _ = grafo.primero_anchura(inicio, meta)
     assert len(camino_dfs) >= len(camino_bfs)
+
+
+def test_macro_grafo_expande_la_ruta_completa():
+    grafo, inicio, meta = cargar_grafo_real()
+    macro_grafo = construir_macro_grafo(grafo.lista_adyacencia, inicio, meta)
+
+    ruta_macro, _ = grafo.astar_macro(inicio, meta, macro_grafo)
+    ruta_completa = expandir_ruta_macro(ruta_macro, macro_grafo)
+
+    assert ruta_macro is not None
+    assert ruta_completa[0] == inicio
+    assert ruta_completa[-1] == meta
+    assert len(ruta_completa) >= len(ruta_macro)
+
+
+def test_astar_macro_conserva_la_longitud_optima_de_bfs():
+    grafo, inicio, meta = cargar_grafo_real()
+    macro_grafo = construir_macro_grafo(grafo.lista_adyacencia, inicio, meta)
+
+    ruta_bfs, _ = grafo.primero_anchura(inicio, meta)
+    ruta_macro, _ = grafo.astar_macro(inicio, meta, macro_grafo)
+    ruta_completa = expandir_ruta_macro(ruta_macro, macro_grafo)
+
+    assert len(ruta_completa) == len(ruta_bfs)

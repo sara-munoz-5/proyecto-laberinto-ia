@@ -82,3 +82,37 @@ class Grafo:
                     )
 
         return None, len(visitados)
+
+    def astar_macro(self, nodo_inicio, nodo_final, macro_grafo):
+        """Busca sobre el macro-grafo usando costos de corredores completos."""
+        self.meta = nodo_final
+        contador = 0
+        cola_prioridad = [(self.h(nodo_inicio), contador, nodo_inicio, [nodo_inicio], 0)]
+        visitados = set()
+
+        while cola_prioridad:
+            _, _, nodo_actual, camino, costo_actual = heapq.heappop(cola_prioridad)
+
+            if nodo_actual in visitados:
+                continue
+            visitados.add(nodo_actual)
+
+            if nodo_actual == nodo_final:
+                return camino, len(visitados)
+
+            for vecino, peso, _ in macro_grafo[nodo_actual]:
+                if vecino in visitados:
+                    continue
+                nuevo_costo = costo_actual + peso
+                contador += 1
+                prioridad = nuevo_costo + self.h(vecino)
+                heapq.heappush(
+                    cola_prioridad,
+                    (prioridad, contador, vecino, camino + [vecino], nuevo_costo),
+                )
+
+        return None, len(visitados)
+
+    def a_estrella_macro(self, nodo_inicio, nodo_final, macro_grafo):
+        """Alias en español para la búsqueda A* sobre el macro-grafo."""
+        return self.astar_macro(nodo_inicio, nodo_final, macro_grafo)
